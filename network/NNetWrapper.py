@@ -19,12 +19,13 @@ from network.NNetArchitecture import NNetArchitecture as nnetarch
 
 loss1=nn.CrossEntropyLoss(reduction='sum')
 loss2=nn.KLDivLoss(reduction='sum')
-loss3=nn.MSELoss(reduction='sum')
+loss3=nn.MSELoss(reduction='mean')
+loss4=nn.BCELoss(reduction='mean')
 """
     TODO: Tune or add new arguments if you need
 """
 args = dotdict({
-    'lr': 0.1,#0.003,
+    'lr': 0.003,
     'cuda': torch.cuda.is_available(),
     'feat_cnt': 3
 })
@@ -36,15 +37,11 @@ class NNetWrapper():
         self.board_x, self.board_y = game.getBoardSize()
         self.action_size = game.getActionSize()
 
-        self.optimizer = optim.Adam([
-                                    {'params':self.nnet.seq.parameters()},
-                                    {'params':self.nnet.seq_val.parameters(),'lr':0.3}
-                                    ],lr=args['lr'],betas=(0.85,0.999))
-        self.scheduler = optim.lr_scheduler.StepLR(self.optimizer, step_size=2, gamma=0.01)
+        self.optimizer = optim.Adam(self.nnet.parameters(),lr=args['lr'],betas=(0.9,0.999))
+        self.scheduler = optim.lr_scheduler.StepLR(self.optimizer, step_size=2, gamma=0.9)
 
         """
             TODO: Choose a optimizer and scheduler
-
             self.optimzer = ...
             self.scheduler = ...
         """
@@ -53,7 +50,8 @@ class NNetWrapper():
             self.nnet.cuda()
 
     def loss_pi(self, outputs, targets):
-        loss_pi=loss1(outputs,targets)
+        outputs=torch.exp(outputs)
+        loss_pi=loss4(outputs,targets)
         """
             TODO: Design a policy loss function
         """
@@ -183,5 +181,3 @@ class NNetWrapper():
         """
             TODO: load the model (nnet, optimizer and scheduler) from the given filepath
         """
-
-            
