@@ -22,8 +22,8 @@ class NNetArchitecture(nn.Module):
         self.pb2=nn.ReLU(inplace=True)
         self.pb3=nn.Conv2d(16,64,kernel_size=3,padding=1)
         self.pb4=nn.ReLU(inplace=True)
-        self.pb5=nn.Conv2d(64,256,kernel_size=3,padding=1)
-        self.pb6=nn.ReLU(inplace=True)
+        self.pb7=nn.Conv2d(64,256,kernel_size=3,padding=1)
+        self.pb8=nn.ReLU(inplace=True)
 
         self.line1=nn.Conv2d(256,2,kernel_size=1,padding=0)
         self.line2=nn.ReLU(inplace=True)
@@ -38,11 +38,11 @@ class NNetArchitecture(nn.Module):
         self.out_val=nn.Linear(128,1)
         self.seq_pb=nn.Sequential(
             self.pb1,self.pb2,self.pb3,
-            self.pb4,self.pb5,self.pb6,
+            self.pb4,
+            self.pb7,self.pb8
         )
         self.seq=nn.Sequential(
             #nn.Conv2d(3,64,kernel_size=3,padding=0),nn.ReLU(inplace=True),nn.Conv2d(64,4,kernel_size=1,padding=0),nn.ReLU(inplace=True)
-            
             self.l1,self.l2
         )
         self.seq_val=nn.Sequential(
